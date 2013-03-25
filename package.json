@@ -1,0 +1,42 @@
+{
+  "name": "symfio-contrib-bower"
+, "version": "0.1.0"
+, "description": "Install components from the Bower repository to the public directory."
+, "keywords": ["symfio-plugin", "symfio-contrib", "bower"]
+, "homepage": "http://symf.io/plugins/contrib-bower"
+, "bugs": {
+    "url": "https://github.com/symfio/symfio-contrib-bower/issues"
+  , "email": "webmaster@rithis.com"
+  }
+, "author": {
+    "name": "Vyacheslav Slinko"
+  , "email": "vyacheslav.slinko@gmail.com"
+  }
+, "main": "lib/bower"
+, "repository": {
+    "type": "git"
+  , "url": "git://github.com/symfio/symfio-contrib-bower.git"
+  }
+, "scripts": {
+    "test": "grunt simplemocha"
+  }
+, "dependencies": {
+    "bower": "~0.8"
+  , "async": "~0.2"
+  }
+, "devDependencies": {
+    "symfio": "~1.0"
+  , "symfio-suite": "~1.0"
+  , "symfio-contrib-express": "~0.1"
+  , "symfio-contrib-assets": "~0.1"
+  , "fs.extra": "~1.2"
+  , "grunt": "~0.4"
+  , "grunt-simple-mocha": "~0.3"
+  , "grunt-coffeelint": "~0.0"
+  }
+, "engines": {
+    "node": "~0.8"
+  , "npm": "~1.2"
+  , "coffee-script": "~1.6"
+  }
+}

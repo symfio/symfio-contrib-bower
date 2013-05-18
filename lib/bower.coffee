@@ -46,7 +46,7 @@ module.exports = (container, callback) ->
 
       unless container.get "silent"
         installation.on "data", (data) ->
-          console.log data
+          console.log data.trim()
 
       installation.on "end", ->
         process.chdir cwd

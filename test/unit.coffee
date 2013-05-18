@@ -29,7 +29,7 @@ describe "contrib-bower plugin", ->
       @expect(@installation.on).to.have.been.calledWith "data"
 
       listener = @installation.on.withArgs("data").firstCall.args[1]
-      listener "bower"
+      listener "bower\n"
 
       @expect(console.log).to.have.been.calledOnce
       @expect(console.log).to.have.been.calledWith "bower"

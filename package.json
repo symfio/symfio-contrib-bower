@@ -1,6 +1,6 @@
 {
   "name": "symfio-contrib-bower"
-, "version": "0.1.1"
+, "version": "0.1.2"
 , "description": "Install components from the Bower repository to the public directory."
 , "keywords": ["symfio-plugin", "symfio-contrib", "bower"]
 , "homepage": "http://symf.io/plugins/contrib-bower"

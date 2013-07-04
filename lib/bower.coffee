@@ -1,58 +1,41 @@
-crypto = require "crypto"
-bower = require "bower"
-async = require "async"
 path = require "path"
-fs = require "fs"
+w = require "when"
 
 
-module.exports = (container, callback) ->
-  applicationDirectory = container.get "application directory"
-  publicDirectory = path.join applicationDirectory, "public"
+module.exports = (container) ->
+  container.unless "components", []
 
-  publicDirectory = container.get "public directory", publicDirectory
-  components = container.get "components", []
-  hashFile = path.join applicationDirectory, ".components"
-  loader = container.get "loader"
-  logger = container.get "logger"
+  container.unless "componentsDirectory",
+    (publicDirectory, applicationDirectory) ->
+      if publicDirectory
+        path.join publicDirectory, "bower_components"
+      else
+        path.join applicationDirectory, "bower_components"
 
-  return callback() if components.length == 0
+  container.set "bower", (componentsDirectory) ->
+    bower = require "bower"
+    bower.config.directory = path.basename componentsDirectory
+    bower
 
-  logger.info "loading plugin", "contrib-bower"
 
-  hash = crypto.createHash "sha256"
+  container.call (logger, componentsDirectory, components, bower) ->
+    deffered = w.defer()
 
-  for component in components
-    hash.update component, "utf8"
-    hash.update ":", "utf8"
+    oldCwd = process.cwd()
+    process.chdir path.dirname componentsDirectory
 
-  hashDigest = hash.digest "hex"
+    emitter = bower.commands.install components
 
-  async.series [
-    (callback) ->
-      componentsDirectory = path.join publicDirectory, "components"
+    emitter.on "data", (data) ->
+      logger.info data.trim().replace /\033\[[0-9;]*m/g, ""
 
-      fs.stat componentsDirectory, (err, stat) ->
-        return callback() if err or not stat.isDirectory()
+    emitter.on "warn", (data) ->
+      logger.warn data.trim().replace /\033\[[0-9;]*m/g, ""
 
-        fs.readFile hashFile, "utf8", (err, previousHash) ->
-          return callback previousHash if hashDigest == previousHash
-          callback()
+    emitter.on "error", ->
 
-    (callback) ->
-      cwd = process.cwd()
-      process.chdir publicDirectory
+    emitter.on "end", ->
+      process.chdir oldCwd
+      deffered.resolve()
 
-      installation = bower.commands.install components
-
-      unless container.get "silent"
-        installation.on "data", (data) ->
-          console.log data.trim()
-
-      installation.on "end", ->
-        process.chdir cwd
-        callback()
-
-    (callback) ->
-      fs.writeFile hashFile, hashDigest, -> callback()
-
-  ], -> callback()
+    deffered.promise

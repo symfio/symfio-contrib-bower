@@ -1,23 +1,18 @@
 symfio = require "symfio"
+nodefn = require "when/node/function"
 fs = require "fs.extra"
 
 module.exports = container = symfio "example", __dirname
-container.set "public directory", __dirname
+
+container.set "publicDirectory", __dirname
 container.set "components", ["jquery"]
 
-loader = container.get "loader"
-loader.use require "symfio-contrib-express"
-loader.use require "symfio-contrib-assets"
-loader.use require "../lib/bower"
+container.use ->
+  nodefn.call fs.remove, "#{__dirname}/bower_components"
 
-loader.use (container, callback) ->
-  unloader = container.get "unloader"
+container.use require "symfio-contrib-winston"
+container.use require "symfio-contrib-express"
+container.use require "symfio-contrib-assets"
+container.use require ".."
 
-  unloader.register (callback) ->
-    fs.remove "#{__dirname}/.components", ->
-      fs.remove "#{__dirname}/components", ->
-        callback()
-
-  callback()
-
-loader.load() if require.main is module
+container.load() if require.main is module

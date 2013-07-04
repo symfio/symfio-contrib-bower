@@ -11,15 +11,16 @@
 symfio = require "symfio"
 
 container = symfio "example", __dirname
+
 container.set "components", ["jquery", "bootstrap"]
 
-loader = container.get "loader"
-loader.use require "symfio-contrib-bower"
+container.use require "symfio-contrib-bower"
 
-loader.load()
+container.load()
 ```
 
 ## Can be configured
 
-* __public directory__ — Default is `public`.
+* __componentsDirectory__ — Default is `public/bower_components` or
+  `bower_components`.
 * __components__ - Array of bower components for installation. Default is empty.

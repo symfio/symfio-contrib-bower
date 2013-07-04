@@ -5,12 +5,8 @@ w = require "when"
 module.exports = (container) ->
   container.unless "components", []
 
-  container.unless "componentsDirectory",
-    (publicDirectory, applicationDirectory) ->
-      if publicDirectory
-        path.join publicDirectory, "bower_components"
-      else
-        path.join applicationDirectory, "bower_components"
+  container.unless "componentsDirectory", (publicDirectory) ->
+    path.join publicDirectory, "bower_components"
 
   container.set "bower", (componentsDirectory) ->
     bower = require "bower"
@@ -18,7 +14,9 @@ module.exports = (container) ->
     bower
 
 
-  container.call (logger, componentsDirectory, components, bower) ->
+  container.inject (logger, componentsDirectory, components, bower) ->
+    return if components.length is 0
+
     deffered = w.defer()
 
     oldCwd = process.cwd()

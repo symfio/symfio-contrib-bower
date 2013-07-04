@@ -1,5 +1,4 @@
 symfio = require "symfio"
-plugin = require ".."
 sinon = require "sinon"
 chai = require "chai"
 
@@ -16,30 +15,32 @@ describe "contrib-bower plugin", ->
   beforeEach (callback) ->
     container = symfio "test", __dirname
 
-    container.use plugin
+    container.set "publicDirectory", __dirname
+    container.set "components", ["jquery"]
 
-    container.use (bower, logger) ->
-      sandbox = sinon.sandbox.create()
+    container.injectAll([
+      require ".."
 
-      sandbox.stub process, "chdir"
+      (bower, logger) ->
+        sandbox = sinon.sandbox.create()
 
-      installation = on: sandbox.stub()
-      installation.on.withArgs("end").yields()
+        sandbox.stub process, "chdir"
 
-      sandbox.stub bower.commands, "install"
-      bower.commands.install.returns installation
+        installation = on: sandbox.stub()
+        installation.on.withArgs("end").yields()
 
-      sandbox.stub logger, "info"
+        sandbox.stub bower.commands, "install"
+        bower.commands.install.returns installation
 
-    container.load().should.notify callback
+        sandbox.stub logger, "info"
+
+    ]).should.notify callback
 
   afterEach ->
     sandbox.restore()
 
   it "should pipe bower output", (callback) ->
-    container.call(plugin).then ->
-      container.get "logger"
-    .then (logger) ->
+    container.get("logger").then (logger) ->
       installation.on.should.have.been.calledWith "data"
 
       listener = installation.on.withArgs("data").firstCall.args[1]

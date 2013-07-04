@@ -8,11 +8,11 @@ describe "contrib-bower example", ->
   chai.should()
 
   container = require "../example"
+  container.set "env", "test"
 
   before (callback) ->
-    container.set "autoload", false
-    container.set "env", "test"
-    container.load().should.notify callback
+    @timeout 0
+    container.promise.should.notify callback
 
   describe "GET /bower_components/jquery/component.json", ->
     it "should respond with installed components", (callback) ->

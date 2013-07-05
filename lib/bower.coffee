@@ -25,10 +25,10 @@ module.exports = (container) ->
     emitter = bower.commands.install components
 
     emitter.on "data", (data) ->
-      logger.info data.trim().replace /\033\[[0-9;]*m/g, ""
+      logger.info data.trim()
 
     emitter.on "warn", (data) ->
-      logger.warn data.trim().replace /\033\[[0-9;]*m/g, ""
+      logger.warn data.trim()
 
     emitter.on "error", ->
 

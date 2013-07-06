@@ -1,51 +1,33 @@
-symfio = require "symfio"
-sinon = require "sinon"
-chai = require "chai"
+suite = require "symfio-suite"
 
 
 describe "contrib-bower()", ->
-  chai.use require "chai-as-promised"
-  chai.use require "sinon-chai"
-  chai.should()
+  it = suite.plugin [
+    require ".."
 
-  installation = null
-  container = null
-  sandbox = null
+    (container) ->
+      container.set "publicDirectory", __dirname
+      container.set "components", ["jquery"]
 
-  beforeEach (callback) ->
-    container = symfio "test", __dirname
-
-    container.set "publicDirectory", __dirname
-    container.set "components", ["jquery"]
-
-    container.injectAll([
-      require ".."
-
-      (bower, logger) ->
-        sandbox = sinon.sandbox.create()
-
-        sandbox.stub process, "chdir"
-
+      container.set "installation", (sandbox) ->
         installation = on: sandbox.stub()
         installation.on.withArgs("end").yields()
+        installation
 
-        sandbox.stub bower.commands, "install"
+      container.set "bower", (installation, sandbox) ->
+        bower = commands: install: sandbox.stub()
         bower.commands.install.returns installation
+        bower
 
-        sandbox.stub logger, "info"
+      container.inject (sandbox) ->
+        sandbox.stub process, "chdir"
+  ]
 
-    ]).should.notify callback
+  it "should pipe bower output", (logger, installation) ->
+    installation.on.should.have.been.calledWith "data"
 
-  afterEach ->
-    sandbox.restore()
+    listener = installation.on.withArgs("data").firstCall.args[1]
+    listener "bower\n"
 
-  it "should pipe bower output", (callback) ->
-    container.get("logger").then (logger) ->
-      installation.on.should.have.been.calledWith "data"
-
-      listener = installation.on.withArgs("data").firstCall.args[1]
-      listener "bower\n"
-
-      logger.info.should.have.been.calledOnce
-      logger.info.should.have.been.calledWith "bower"
-    .should.notify callback
+    logger.info.should.have.been.calledOnce
+    logger.info.should.have.been.calledWith "bower"

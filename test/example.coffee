@@ -1,28 +1,11 @@
-chai = require "chai"
-w = require "when"
+suite = require "symfio-suite"
 
 
 describe "contrib-bower example", ->
-  chai.use require "chai-as-promised"
-  chai.use require "chai-http"
-  chai.should()
-
-  container = require "../example"
-  container.set "env", "test"
-
-  before (callback) ->
-    @timeout 0
-    container.promise.should.notify callback
+  it = suite.example require "../example"
 
   describe "GET /bower_components/jquery/component.json", ->
-    it "should respond with installed components", (callback) ->
-      container.get("app").then (app) ->
-        url = "/bower_components/jquery/component.json"
-
-        deferred = w.defer()
-        chai.request(app).get(url).res deferred.resolve
-        deferred.promise
-      .then (res) ->
+    it "should respond with installed components", (request) ->
+      request.get("/bower_components/jquery/component.json").then (res) ->
         res.should.have.status 200
         res.text.should.include "jquery"
-      .should.notify callback

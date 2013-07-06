@@ -3,7 +3,7 @@ sinon = require "sinon"
 chai = require "chai"
 
 
-describe "contrib-bower plugin", ->
+describe "contrib-bower()", ->
   chai.use require "chai-as-promised"
   chai.use require "sinon-chai"
   chai.should()

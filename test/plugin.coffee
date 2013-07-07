@@ -2,23 +2,21 @@ suite = require "symfio-suite"
 
 
 describe "contrib-bower()", ->
-  it = suite.plugin [
-    (container, containerStub) ->
-      require("..") containerStub
+  it = suite.plugin (container, containerStub) ->
+    require("..") containerStub
 
-      container.set "installation", (sandbox) ->
-        installation = on: sandbox.stub()
-        installation.on.withArgs("end").yields()
-        installation
+    container.set "installation", (sandbox) ->
+      installation = on: sandbox.stub()
+      installation.on.withArgs("end").yields()
+      installation
 
-      container.set "bower", (installation, sandbox) ->
-        bower = commands: install: sandbox.stub()
-        bower.commands.install.returns installation
-        bower
+    container.set "bower", (installation, sandbox) ->
+      bower = commands: install: sandbox.stub()
+      bower.commands.install.returns installation
+      bower
 
-      container.inject (sandbox) ->
-        sandbox.stub process, "chdir"
-  ]
+    container.inject (sandbox) ->
+      sandbox.stub process, "chdir"
 
   describe "container.unless components", ->
     it "should be empty", (containerStub) ->

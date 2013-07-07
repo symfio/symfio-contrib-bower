@@ -1,13 +1,10 @@
-plugin = require ".."
 suite = require "symfio-suite"
 
 
 describe "contrib-bower()", ->
   it = suite.plugin [
-    plugin
-
-    (container) ->
-      container.set "publicDirectory", __dirname
+    (container, containerStub) ->
+      require("..") containerStub
 
       container.set "installation", (sandbox) ->
         installation = on: sandbox.stub()
@@ -24,31 +21,28 @@ describe "contrib-bower()", ->
   ]
 
   describe "container.unless components", ->
-    it "should be empty", (components) ->
-      components.should.have.length 0
+    it "should be empty", (containerStub) ->
+      containerStub.unless.get("components").should.have.length 0
 
   describe "container.unless componentsDirectory", ->
-    it "should define", (componentsDirectory) ->
-      componentsDirectory.should.equal "#{__dirname}/bower_components"
+    it "should define", (containerStub) ->
+      factory = containerStub.unless.get "componentsDirectory"
+      factory("/").should.equal "/bower_components"
 
   describe "container.set bower", ->
-    it "should configure componentsDirectory", (container) ->
-      container.set "componentsDirectory", "/noop"
+    # speedup test
+    require "bower"
 
-      container.inject(plugin).then ->
-        container.get "bower"
-      .then (bower) ->
-        bower.config.directory.should.equal "noop"
+    it "should configure componentsDirectory", (containerStub) ->
+      factory = containerStub.set.get "bower"
+      bower = factory("/noop")
+      bower.config.directory.should.equal "noop"
 
   it "should run installation and pipe bower output",
-    (container, logger, installation) ->
-      container.set "components", ["jquery"]
+    (containerStub, logger, bower, installation) ->
+      factory = containerStub.inject.get 0
 
-      container.inject (sandbox) ->
-        sandbox.stub container, "set"
-      .then ->
-        container.inject plugin
-      .then ->
+      factory(logger, "/", ["jquery"], bower).then ->
         installation.on.should.have.been.calledWith "data"
 
         listener = installation.on.withArgs("data").firstCall.args[1]

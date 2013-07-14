@@ -5,6 +5,7 @@ describe "contrib-bower()", ->
   it = suite.plugin (container) ->
     container.inject ["suite/container"], require ".."
 
+    container.require "path"
     container.set "publicDirectory", "/"
     container.set "componentsDirectory", "/components"
 
@@ -20,6 +21,10 @@ describe "contrib-bower()", ->
 
     container.inject (sandbox) ->
       sandbox.stub process, "chdir"
+
+  describe "container.require path", ->
+    it "should require path", (required) ->
+      required("path").should.equal "path"
 
   describe "container.unless components", ->
     it "should be empty", (unlessed) ->

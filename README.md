@@ -2,8 +2,7 @@
 
 > Bower plugin for Symfio.
 
-[![Build Status](http://teamcity.rithis.com/httpAuth/app/rest/builds/buildType:id:bt11,branch:master/statusIcon?guest=1)](http://teamcity.rithis.com/viewType.html?buildTypeId=bt11&guest=1)
-[![Dependency Status](https://gemnasium.com/symfio/symfio-contrib-bower.png)](https://gemnasium.com/symfio/symfio-contrib-bower)
+[![Build Status](https://travis-ci.org/symfio/symfio-contrib-bower.png?branch=master)](https://travis-ci.org/symfio/symfio-contrib-bower) [![Dependency Status](https://gemnasium.com/symfio/symfio-contrib-bower.png)](https://gemnasium.com/symfio/symfio-contrib-bower)
 
 ## Usage
 

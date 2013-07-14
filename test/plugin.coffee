@@ -2,8 +2,11 @@ suite = require "symfio-suite"
 
 
 describe "contrib-bower()", ->
-  it = suite.plugin (container, containerStub) ->
-    require("..") containerStub
+  it = suite.plugin (container) ->
+    container.inject ["suite/container"], require ".."
+
+    container.set "publicDirectory", "/"
+    container.set "componentsDirectory", "/components"
 
     container.set "installation", (sandbox) ->
       installation = on: sandbox.stub()
@@ -19,28 +22,29 @@ describe "contrib-bower()", ->
       sandbox.stub process, "chdir"
 
   describe "container.unless components", ->
-    it "should be empty", (containerStub) ->
-      containerStub.unless.get("components").should.have.length 0
+    it "should be empty", (unlessed) ->
+      factory = unlessed "components"
+      factory().should.eventually.have.length 0
 
   describe "container.unless componentsDirectory", ->
-    it "should define", (containerStub) ->
-      factory = containerStub.unless.get "componentsDirectory"
-      factory("/").should.equal "/bower_components"
+    it "should define", (unlessed) ->
+      factory = unlessed "componentsDirectory"
+      factory().should.eventually.equal "/bower_components"
 
   describe "container.set bower", ->
     # speedup test
     require "bower"
 
-    it "should configure componentsDirectory", (containerStub) ->
-      factory = containerStub.set.get "bower"
-      bower = factory("/noop")
-      bower.config.directory.should.equal "noop"
+    it "should configure componentsDirectory", (setted) ->
+      factory = setted "bower"
+      factory().then (bower) ->
+        bower.config.directory.should.equal "components"
 
   it "should run installation and pipe bower output",
-    (containerStub, logger, bower, installation) ->
-      factory = containerStub.inject.get 0
-
-      factory(logger, "/", ["jquery"], bower).then ->
+    (injected, installation, logger) ->
+      factory = injected()
+      factory.dependencies.components = ["jquery"]
+      factory().then ->
         installation.on.should.have.been.calledWith "data"
 
         listener = installation.on.withArgs("data").firstCall.args[1]

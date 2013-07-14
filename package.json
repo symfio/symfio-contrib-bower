@@ -1,6 +1,6 @@
 {
   "name": "symfio-contrib-bower"
-, "version": "2.0.3"
+, "version": "2.0.4"
 , "description": "Bower plugin for Symfio."
 , "keywords": ["symfio-plugin", "symfio-contrib", "bower"]
 , "homepage": "http://symf.io/plugins/contrib-bower"

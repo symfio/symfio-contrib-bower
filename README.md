@@ -38,3 +38,7 @@ Default is `public/bower_components`.
 ### `bower`
 
 Original `bower` module.
+
+### `installBowerComponents`
+
+Function used to load fixtures after all plugins is loaded.

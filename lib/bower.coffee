@@ -14,26 +14,28 @@ module.exports = (container) ->
     bower
 
 
-  container.inject (logger, componentsDirectory, components, bower) ->
-    return if components.length is 0
+  container.set "installBowerComponents",
+    (logger, componentsDirectory, components, bower) ->
+      ->
+        return if components.length is 0
 
-    deffered = w.defer()
+        deffered = w.defer()
 
-    oldCwd = process.cwd()
-    process.chdir path.dirname componentsDirectory
+        oldCwd = process.cwd()
+        process.chdir path.dirname componentsDirectory
 
-    emitter = bower.commands.install components
+        emitter = bower.commands.install components
 
-    emitter.on "data", (data) ->
-      logger.info data.trim()
+        emitter.on "data", (data) ->
+          logger.info data.trim()
 
-    emitter.on "warn", (data) ->
-      logger.warn data.trim()
+        emitter.on "warn", (data) ->
+          logger.warn data.trim()
 
-    emitter.on "error", ->
+        emitter.on "error", ->
 
-    emitter.on "end", ->
-      process.chdir oldCwd
-      deffered.resolve()
+        emitter.on "end", ->
+          process.chdir oldCwd
+          deffered.resolve()
 
-    deffered.promise
+        deffered.promise

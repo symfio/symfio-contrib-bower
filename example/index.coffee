@@ -1,6 +1,7 @@
 symfio = require "symfio"
 nodefn = require "when/node/function"
 fs = require "fs.extra"
+w = require "when"
 
 
 module.exports = container = symfio "example", __dirname
@@ -17,9 +18,12 @@ module.exports.promise = container.injectAll([
     nodefn.call(fs.remove, "#{__dirname}/bower_components").then ->
       container.inject require ".."
 ]).then ->
-  container.get "servePublicDirectory"
-.then (servePublicDirectory) ->
-  servePublicDirectory()
+  container.get ["servePublicDirectory", "installBowerComponents"]
+.spread (servePublicDirectory, installBowerComponents) ->
+  w.all [
+    servePublicDirectory()
+    installBowerComponents()
+  ]
 
 
 if require.main is module

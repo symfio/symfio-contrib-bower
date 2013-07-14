@@ -40,15 +40,17 @@ describe "contrib-bower()", ->
       factory().then (bower) ->
         bower.config.directory.should.equal "components"
 
-  it "should run installation and pipe bower output",
-    (injected, installation, logger) ->
-      factory = injected()
-      factory.dependencies.components = ["jquery"]
-      factory().then ->
-        installation.on.should.have.been.calledWith "data"
+  describe "container.set installBowerComponents", ->
+    it "should run installation and pipe bower output",
+      (setted, installation, logger) ->
+        factory = setted "installBowerComponents"
+        factory.dependencies.components = ["jquery"]
+        factory().then (installBowerComponents) ->
+          installBowerComponents()
+          installation.on.should.have.been.calledWith "data"
 
-        listener = installation.on.withArgs("data").firstCall.args[1]
-        listener "bower\n"
+          listener = installation.on.withArgs("data").firstCall.args[1]
+          listener "bower\n"
 
-        logger.info.should.have.been.calledOnce
-        logger.info.should.have.been.calledWith "bower"
+          logger.info.should.have.been.calledOnce
+          logger.info.should.have.been.calledWith "bower"

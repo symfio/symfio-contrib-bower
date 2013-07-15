@@ -2,7 +2,10 @@
 
 > Bower plugin for Symfio.
 
-[![Build Status](https://travis-ci.org/symfio/symfio-contrib-bower.png?branch=master)](https://travis-ci.org/symfio/symfio-contrib-bower) [![Dependency Status](https://gemnasium.com/symfio/symfio-contrib-bower.png)](https://gemnasium.com/symfio/symfio-contrib-bower)
+[![Build Status](https://travis-ci.org/symfio/symfio-contrib-bower.png?branch=master)](https://travis-ci.org/symfio/symfio-contrib-bower)
+[![Coverage Status](https://coveralls.io/repos/symfio/symfio-contrib-bower/badge.png?branch=master)](https://coveralls.io/r/symfio/symfio-contrib-bower?branch=master)
+[![Dependency Status](https://gemnasium.com/symfio/symfio-contrib-bower.png)](https://gemnasium.com/symfio/symfio-contrib-bower)
+[![NPM version](https://badge.fury.io/js/symfio-contrib-bower.png)](http://badge.fury.io/js/symfio-contrib-bower)
 
 ## Usage
 
